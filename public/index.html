@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Attendance System - College Attendance Made Simple</title>
+  <meta name="description" content="Secure QR code based attendance system for colleges with location verification. Teachers generate QR codes, students scan to mark attendance.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="navbar-brand">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <path d="M7 7h.01M7 12h.01M7 17h.01M12 7h.01M12 12h.01M12 17h.01M17 7h.01M17 12h.01M17 17h.01"/>
+        </svg>
+        QR Attendance
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="/teacher/login.html" class="nav-link">Teacher Login</a></li>
+        <li>
+          <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Smart Attendance Tracking</h1>
+      <p>Transform your classroom attendance with our secure QR code system. Teachers generate unique codes, students scan and verify their presence with GPS location.</p>
+      <div class="hero-buttons">
+        <a href="/teacher/login.html" class="btn btn-primary btn-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          Teacher Dashboard
+        </a>
+        <a href="/student/mark.html" class="btn btn-secondary btn-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M7 7h.01M7 12h.01M7 17h.01M12 7h.01M12 12h.01M12 17h.01M17 7h.01M17 12h.01M17 17h.01"/>
+          </svg>
+          Scan QR Code
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="container" style="padding-bottom: 4rem;">
+    <div class="stats-grid">
+      <div class="stat-card text-center">
+        <div style="font-size: 3rem; margin-bottom: 0.5rem;">🔐</div>
+        <h4>Secure</h4>
+        <p class="text-muted" style="margin: 0;">Time-limited QR codes that expire automatically</p>
+      </div>
+      <div class="stat-card text-center">
+        <div style="font-size: 3rem; margin-bottom: 0.5rem;">📍</div>
+        <h4>Location Verified</h4>
+        <p class="text-muted" style="margin: 0;">GPS verification ensures students are in class</p>
+      </div>
+      <div class="stat-card text-center">
+        <div style="font-size: 3rem; margin-bottom: 0.5rem;">⚡</div>
+        <h4>Fast & Simple</h4>
+        <p class="text-muted" style="margin: 0;">Mark attendance in seconds with just a scan</p>
+      </div>
+      <div class="stat-card text-center">
+        <div style="font-size: 3rem; margin-bottom: 0.5rem;">📊</div>
+        <h4>Easy Reports</h4>
+        <p class="text-muted" style="margin: 0;">Export attendance records to CSV anytime</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Theme toggle functionality
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  </script>
+</body>
+</html>

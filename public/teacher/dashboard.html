@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - QR Attendance System</title>
+    <meta name="description" content="Manage lectures and attendance with QR codes">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <path d="M7 7h.01M7 12h.01M7 17h.01M12 7h.01M12 12h.01M12 17h.01M17 7h.01M17 12h.01M17 17h.01" />
+                </svg>
+                QR Attendance
+            </a>
+            <ul class="navbar-nav">
+                <li><span id="teacherName" class="nav-link" style="cursor: default;"></span></li>
+                <li>
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">
+                        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5" />
+                            <path
+                                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                        </svg>
+                    </button>
+                </li>
+                <li>
+                    <button class="btn btn-secondary btn-sm" onclick="handleLogout()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+                        </svg>
+                        Logout
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="dashboard container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div>
+                <h1>Dashboard</h1>
+                <p class="text-muted">Manage your lectures and track attendance</p>
+            </div>
+            <button class="btn btn-primary" onclick="openCreateModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Create Lecture
+            </button>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalLectures">0</div>
+                <div class="stat-label">Total Lectures</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalAttendance">0</div>
+                <div class="stat-label">Total Attendance</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="activeLectures">0</div>
+                <div class="stat-label">Active QR Codes</div>
+            </div>
+        </div>
+
+        <!-- Lectures Grid -->
+        <h2 class="mb-lg">Your Lectures</h2>
+        <div class="lectures-grid" id="lecturesGrid">
+            <!-- Lectures will be loaded here -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state hidden" id="emptyState">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M7 7h.01M7 12h.01M7 17h.01M12 7h.01M12 12h.01M12 17h.01M17 7h.01M17 12h.01M17 17h.01" />
+            </svg>
+            <h3>No lectures yet</h3>
+            <p>Create your first lecture to start taking attendance</p>
+            <button class="btn btn-primary" onclick="openCreateModal()">Create Lecture</button>
+        </div>
+    </main>
+
+    <!-- Create Lecture Modal -->
+    <div class="modal-overlay" id="createModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Lecture</h3>
+                <button class="modal-close" onclick="closeCreateModal()">&times;</button>
+            </div>
+            <form id="createLectureForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="subject" class="form-label">Subject *</label>
+                        <input type="text" id="subject" class="form-input" placeholder="e.g., Mathematics, Physics"
+                            required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date" class="form-label">Date *</label>
+                            <input type="date" id="date" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lectureNumber" class="form-label">Lecture # *</label>
+                            <input type="number" id="lectureNumber" class="form-input" min="1" value="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes" class="form-label">Notes (Optional)</label>
+                        <input type="text" id="notes" class="form-input" placeholder="Any additional notes">
+                    </div>
+
+                    <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
+
+                    <h4 style="margin-bottom: 1rem;">📍 Classroom Location</h4>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="classroomLat" class="form-label">Latitude *</label>
+                            <input type="number" id="classroomLat" class="form-input" step="any"
+                                placeholder="e.g., 28.6139" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="classroomLng" class="form-label">Longitude *</label>
+                            <input type="number" id="classroomLng" class="form-input" step="any"
+                                placeholder="e.g., 77.2090" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="allowedRadius" class="form-label">Allowed Radius (meters)</label>
+                        <input type="number" id="allowedRadius" class="form-input" min="10" max="500" value="100"
+                            placeholder="100">
+                        <p class="form-text">Students must be within this distance to mark attendance</p>
+                    </div>
+
+                    <button type="button" class="btn btn-secondary w-full" onclick="useCurrentLocation()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        Use Current Location
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="createBtn">Create Lecture</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View QR Modal -->
+    <div class="modal-overlay" id="qrModal">
+        <div class="modal" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="qrModalTitle">QR Code</h3>
+                <button class="modal-close" onclick="closeQRModal()">&times;</button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="qr-container" id="qrContainer">
+                    <img id="qrCodeImg" src="" alt="QR Code" class="qr-code">
+                    <div class="qr-timer" id="qrTimer">05:00</div>
+                    <p class="text-muted mt-md">Students scan this QR to mark attendance</p>
+                </div>
+                <div id="qrExpired" class="hidden mt-lg">
+                    <div class="alert alert-warning">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        QR Code has expired
+                    </div>
+                    <button class="btn btn-primary w-full mt-md" onclick="regenerateQR()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10" />
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+                        </svg>
+                        Generate New QR Code
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Attendance Modal -->
+    <div class="modal-overlay" id="attendanceModal">
+        <div class="modal" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="attendanceModalTitle">Attendance Records</h3>
+                <button class="modal-close" onclick="closeAttendanceModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="attendanceContent">
+                    <!-- Attendance records will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAttendanceModal()">Close</button>
+                <button class="btn btn-primary" id="exportBtn" onclick="exportAttendance()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export CSV
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p id="loadingText">Loading...</p>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/teacher.js"></script>
+</body>
+
+</html>
