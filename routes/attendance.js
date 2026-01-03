@@ -42,8 +42,9 @@ router.post('/mark', (req, res) => {
             return res.status(409).json({ error: 'Attendance already marked for this roll number' });
         }
 
-        // Validate location if provided
-        let locationStatus = 'unavailable';
+        // Location verification is OPTIONAL (disabled for now)
+        // If location is provided, validate it; otherwise, mark as 'not_required'
+        let locationStatus = 'not_required';
         let studentLat = null;
         let studentLng = null;
 
@@ -62,17 +63,11 @@ router.post('/mark', (req, res) => {
             if (locationCheck.isValid) {
                 locationStatus = 'verified';
             } else {
-                locationStatus = 'rejected';
-                return res.status(403).json({
-                    error: `Location mismatch. You are ${locationCheck.distance} meters away from the classroom. Maximum allowed: ${lecture.allowed_radius} meters.`
-                });
+                // Location provided but outside radius - still allow but mark as 'outside_radius'
+                locationStatus = 'outside_radius';
             }
-        } else {
-            // Location not provided - reject attendance
-            return res.status(400).json({
-                error: 'Location permission is required to mark attendance. Please enable GPS and try again.'
-            });
         }
+        // No location provided - that's fine, continue without it
 
         // Create attendance record
         const attendance = db.createAttendance({

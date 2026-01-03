@@ -102,21 +102,18 @@ function updateTimer(seconds) {
 
 async function requestLocation() {
     showForm();
-    updateLocationStatus('pending', 'Requesting location access...');
+    updateLocationStatus('pending', 'Checking location (optional)...');
 
     try {
         studentLocation = await getCurrentLocation();
         updateLocationStatus('success', `Location acquired (±${Math.round(studentLocation.accuracy)}m accuracy)`);
-        enableSubmit();
     } catch (error) {
-        updateLocationStatus('error', error.message);
-        // Still show form but disable submit
-        document.getElementById('submitBtn').disabled = true;
-        document.getElementById('submitText').textContent = 'Location required';
-
-        // Show retry button
-        showLocationRetry();
+        // Location is optional now - just show info message
+        updateLocationStatus('success', 'Location not available - you can still mark attendance');
+        studentLocation = null;
     }
+    // Enable submit regardless of location status
+    enableSubmit();
 }
 
 function updateLocationStatus(status, text) {
@@ -170,10 +167,7 @@ async function handleSubmit(e) {
     const studentName = document.getElementById('studentName').value.trim();
     const rollNumber = document.getElementById('rollNumber').value.trim().toUpperCase();
 
-    if (!studentLocation) {
-        showToast('Location is required to mark attendance', 'error');
-        return;
-    }
+    // Location is now optional - proceed even without it
 
     // Disable form
     document.getElementById('submitBtn').disabled = true;
@@ -184,8 +178,8 @@ async function handleSubmit(e) {
             qrToken,
             studentName,
             rollNumber,
-            studentLocation.latitude,
-            studentLocation.longitude
+            studentLocation ? studentLocation.latitude : null,
+            studentLocation ? studentLocation.longitude : null
         );
 
         // Stop timer
