@@ -3,8 +3,12 @@ services:
     name: qr-attendance-system
     env: node
     plan: free
+    branch: main
     buildCommand: npm install
     startCommand: node server.js
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
+      - key: JWT_SECRET
+        generateValue: true
